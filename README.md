@@ -1,5 +1,5 @@
 # Predicting_stock_prices
-Stock/ cryptocurrency price Prediction demo 
+Stock/cryptocurrency price Prediction demo 
 
 ## Overview
 Based on the 'Learn Python for Data Science #3' code by youtuber @Sirajology on [YouTube](https://youtu.be/SSu00IRRraY). The code uses the [scikit-learn](https://github.com/scikit-learn/scikit-learn) machine learning library to train a [support vector regression](https://en.wikipedia.org/wiki/Support_vector_machine) on a stock price dataset from a csv file that can be generated using [CoinMarketCapScraper](https://github.com/SuperKogito/CoinMarketCapScraper) to predict a future price.
@@ -22,6 +22,6 @@ Once you have your dependencies installed via pip, run the demo script in termin
 python demo.py
 ```
 
-##C redits
+## Credits
 
 This code is 100% Siraj
