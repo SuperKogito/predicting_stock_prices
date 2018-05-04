@@ -15,7 +15,6 @@ Based on the 'Learn Python for Data Science #3' code by youtuber @Sirajology on 
 Install missing dependencies using [pip](https://pip.pypa.io/en/stable/installing/)
 
 ## Demo Usage
-
 Once you have your dependencies installed via pip, run the demo script in terminal via
 
 ```
