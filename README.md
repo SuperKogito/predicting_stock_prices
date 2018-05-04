@@ -23,5 +23,5 @@ python demo.py
 ```
 
 ## Credits
-
-This code is 100% Siraj
+Siraj
+stackoverflow
