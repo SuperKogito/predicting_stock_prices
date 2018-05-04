@@ -1,49 +1,76 @@
-import csv
 import numpy as np
+import pandas as pd
 from sklearn.svm import SVR
+from matplotlib import style
 import matplotlib.pyplot as plt
+from matplotlib.pylab import rcParams
 
+# Predefined values
+style.use('seaborn')
+rcParams['figure.figsize'] = 15, 10
 
-plt.switch_backend('newbackend')  
-
-
-
-dates = []
-prices = []
 
 def get_data(filename):
-	with open(filename, 'r') as csvfile:
-		csvFileReader = csv.reader(csvfile)
-		next(csvFileReader)	# skipping column names
-		for row in csvFileReader:
-			dates.append(int(row[0].split('-')[0]))
-			prices.append(float(row[1]))
-	return
+    # Read csv file as panda dataframe
+    data = pd.read_csv(filename)
+    data.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'MarketCap']
+    # Adjast frames
+    data['Date'] = pd.to_datetime(data['Date'])
+    data['Average'] = data.eval('Open + Close') / 2
+    # Adjust diff column
+    data['Diff'] = data['Average'] - data['Average'].shift(1)
+    # Return data as lists
+    return data['Date'].tolist()[1:], data['Average'].tolist()[1:], data['Diff'].tolist()[1:]
 
-def predict_price(dates, prices, x):
-	dates = np.reshape(dates,(len(dates), 1)) # converting to matrix of n X 1
 
-	svr_lin = SVR(kernel= 'linear', C= 1e3)
-	svr_poly = SVR(kernel= 'poly', C= 1e3, degree= 2)
-	svr_rbf = SVR(kernel= 'rbf', C= 1e3, gamma= 0.1) # defining the support vector regression models
-	svr_rbf.fit(dates, prices) # fitting the data points in the models
-	svr_lin.fit(dates, prices)
-	svr_poly.fit(dates, prices)
+def predict_price(indices, dates, prices, x):
+    # Converting to matrix of n X 1
+    print('>>>>> STATUS: MATRIX CONVERSION')
+    indices = np.reshape(indices,(len(indices), 1))
+    # Defining the support vector regression models
+    print('>>>>> STATUS: DEFINING SVR MODEL')
+    # Defining the support vector regression models
+    svr_rbf = SVR(kernel= 'rbf', C= 1e3, gamma= 0.1)
+    # Fitting the data points in the models
+    svr_rbf.fit(indices, prices)
+    # Plotting the results
+    print('>>>>> STATUS: PLOTTING')
+    plt.scatter(dates, prices, color= 'black', label= 'Data')
+    plt.plot(dates, svr_rbf.predict(indices), color= 'red', linewidth=2, label= 'RBF model')
+    plt.gcf().autofmt_xdate()
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.title('Support Vector Regression')
+    plt.legend()
+    plt.show()
 
-	plt.scatter(dates, prices, color= 'black', label= 'Data') # plotting the initial datapoints 
-	plt.plot(dates, svr_rbf.predict(dates), color= 'red', label= 'RBF model') # plotting the line made by the RBF kernel
-	plt.plot(dates,svr_lin.predict(dates), color= 'green', label= 'Linear model') # plotting the line made by linear kernel
-	plt.plot(dates,svr_poly.predict(dates), color= 'blue', label= 'Polynomial model') # plotting the line made by polynomial kernel
-	plt.xlabel('Date')
-	plt.ylabel('Price')
-	plt.title('Support Vector Regression')
-	plt.legend()
-	plt.show()
+    print('>>>>> STATUS: MAKING A PREDICTION')
+    return svr_rbf.predict(x)
 
-	return svr_rbf.predict(x)[0], svr_lin.predict(x)[0], svr_poly.predict(x)[0]
 
-get_data('aapl.csv') # calling get_data method by passing the csv file to it
-#print "Dates- ", dates
-#print "Prices- ", prices
+def delete_outlayers(input_list, price_diff):
+    max_pos = price_diff.index(max(price_diff))
+    min_pos = price_diff.index(min(price_diff))
+    input_list.remove(input_list[max_pos])
+    input_list.remove(input_list[min_pos])
 
-predicted_price = predict_price(dates, prices, 29)  
+
+# Start and import data
+print('>>>>> START')
+dates, prices, price_diff = get_data('data.csv')
+indices = [i for i in range(0, len(prices))]
+
+# Quick filtering to enable good visualization
+# This section can be commented if wished
+delete_outlayers(dates, price_diff)
+delete_outlayers(prices, price_diff)
+delete_outlayers(indices, price_diff)
+price_diff.remove(max(price_diff))
+price_diff.remove(min(price_diff))
+print('>>>>> STATUS: DATA FORMATTING DONE')
+
+# Model and prediction
+predicted_price = predict_price(indices, dates, price_diff, 1829)
+print ('RESULTING PREDICTION = ', (predicted_price*-1)+prices[0])
+print('>>>>> DONE')
+
