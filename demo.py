@@ -82,24 +82,30 @@ def delete_outlayers(input_list, price_diff):
     # Remove correspondant values from input list
     input_list.remove(input_list[max_pos])
     input_list.remove(input_list[min_pos])
+    
 
+def main():
+    """ The main function consists of csv data parsing, svr modelling, plotting and prediction generation """ 
+    
+    # Start and import data
+    print('>>>>> START')
+    dates, prices, price_diff = get_data('data.csv')
+    indices = [i for i in range(0, len(prices))]
+    
+    # Quick filtering to enable good visualization
+    # This section can be commented if wished
+    delete_outlayers(dates, price_diff)
+    delete_outlayers(prices, price_diff)
+    delete_outlayers(indices, price_diff)
+    price_diff.remove(max(price_diff))
+    price_diff.remove(min(price_diff))
+    print('>>>>> STATUS: DATA FORMATTING DONE')
 
-# Start and import data
-print('>>>>> START')
-dates, prices, price_diff = get_data('data.csv')
-indices = [i for i in range(0, len(prices))]
+    # Model and prediction
+    predicted_price = predict_price(indices, dates, price_diff, 1829)
+    print('RESULTING PREDICTION = ', (predicted_price * -1) + prices[0])
+    print('>>>>> DONE')
 
-# Quick filtering to enable good visualization
-# This section can be commented if wished
-delete_outlayers(dates, price_diff)
-delete_outlayers(prices, price_diff)
-delete_outlayers(indices, price_diff)
-price_diff.remove(max(price_diff))
-price_diff.remove(min(price_diff))
-print('>>>>> STATUS: DATA FORMATTING DONE')
-
-# Model and prediction
-predicted_price = predict_price(indices, dates, price_diff, 1829)
-print ('RESULTING PREDICTION = ', (predicted_price*-1)+prices[0])
-print('>>>>> DONE')
-
+    
+if __name__ == '__main__':
+    main()
