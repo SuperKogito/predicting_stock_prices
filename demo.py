@@ -11,11 +11,11 @@ rcParams['figure.figsize'] = 15, 10
 
 
 def get_data(filename):
-    """ 
-    The get_data function reads data from a csv file and returns three data lists that will be later used in the model 
+    """
+    The get_data function reads data from a csv file and returns three data lists that will be later used in the model
     generation.
     """ 
-    
+
     # Read csv file as panda dataframe
     data = pd.read_csv(filename)
     data.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'MarketCap']
@@ -71,9 +71,8 @@ def delete_outlayers(input_list, price_diff):
     """ 
     The delete_outlayers function can be used or ditched depending on the user's wish. It takes in two lists and it deletes
     the values in the first with the same indices of the maximum and minimum of the second list, which is the major forecasting
-    variable. This operations     seeks to delete outlayers and unclassified values that may have a negative effect on the plot 
-    quality.
-    """ 
+    variable. This operations seeks to delete outlayers and unclassified values that may have a negative effect on the plot quality.
+    """
     
     # Get maximum and minimum indices
     max_pos = price_diff.index(max(price_diff))
@@ -86,7 +85,7 @@ def delete_outlayers(input_list, price_diff):
 
 def main():
     """ The main function consists of csv data parsing, svr modelling, plotting and prediction generation """ 
-    
+
     # Start and import data
     print('>>>>> START')
     dates, prices, price_diff = get_data('data.csv')
