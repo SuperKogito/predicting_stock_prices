@@ -14,12 +14,12 @@ def get_data(filename):
     """
     The get_data function reads data from a csv file and returns three data lists that will be later used in the model
     generation.
-    """ 
+    """
 
     # Read csv file as panda dataframe
     data = pd.read_csv(filename)
     data.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'MarketCap']
-    
+
     # Adjast frames
     data['Date'] = pd.to_datetime(data['Date'])
     data['Average'] = data.eval('Open + Close') / 2
@@ -84,7 +84,7 @@ def delete_outlayers(input_list, price_diff):
     
 
 def main():
-    """ The main function consists of csv data parsing, svr modelling, plotting and prediction generation """ 
+    """ The main function consists of csv data parsing, svr modelling, plotting and prediction generation """
 
     # Start and import data
     print('>>>>> START')
